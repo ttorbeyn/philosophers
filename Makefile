@@ -16,7 +16,9 @@ CFLAGS			=	-Wall -Wextra -Werror
 
 INCLUDE			=	-I include
 
-SRC				=	./philo.c
+SRC				=	./philo.c \
+					./ft_error.c \
+					./libft/ft_atoi.c
 
 OBJS			=	$(SRC:.c=.o)
 
