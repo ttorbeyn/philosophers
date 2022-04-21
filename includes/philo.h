@@ -19,11 +19,12 @@
 
 typedef struct s_philo
 {
-	int			id;
-	int 		right_fork;
-	int 		left_fork;
-	long long	last_time_eat;
-	int			state;
+	int				id;
+	int 			right_fork;
+	int 			left_fork;
+	long long		last_time_eat;
+	int				state;
+	struct s_data	*data;
 }				t_philo;
 
 typedef struct s_data
