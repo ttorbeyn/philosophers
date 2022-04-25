@@ -24,6 +24,7 @@ typedef struct s_philo
 	int 			left_fork;
 	long long		last_time_eat;
 	int				state;
+	pthread_t		philo_thread;
 	struct s_data	*data;
 }				t_philo;
 
@@ -36,14 +37,13 @@ typedef struct s_data
 	int				nb_of_t_each_philo_must_eat;
 	long long		timestamp_start;
 	t_philo			*philo;
-	pthread_t		*philo_thread;
 	pthread_mutex_t	*fork;
 	pthread_mutex_t	write;
 }				t_data;
 
 
 //philo.c
-long get_timestamp(t_data *data);
+long long	get_timestamp();
 
 //ft_error.c
 int	ft_exit(char *error);

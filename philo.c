@@ -29,8 +29,21 @@ int philo_set(t_data *data)
 		data->philo[i].right_fork = i;
 		data->philo[i].left_fork = (i + 1) % data->nb_of_philo;
 		data->philo[i].last_time_eat = data->timestamp_start;
-		data->philo->data = data;
+		data->philo[i].data = data;
+		i++;
 	}
+	return (0);
+}
+
+int		ft_write(t_data *data, t_philo *philo, char *status)
+{
+	pthread_mutex_lock(&data->write);
+	printf("%lld\t | ", get_timestamp() - data->timestamp_start);
+	printf("philo %d\t", philo->id);
+	printf("%s\n", status);
+//	printf("start : %lld\n", data->timestamp_start);
+//	printf("current : %lld\n", get_timestamp());
+	pthread_mutex_unlock(&data->write);
 	return (0);
 }
 
@@ -41,24 +54,34 @@ void*	function(void *arg)
 
 	philo = (t_philo *)arg;
 	data = philo->data;
-	pthread_mutex_lock(&data->write);
-	printf("thread %d\n", philo->id);
-	printf("%ld\n", get_timestamp(data));
-	pthread_mutex_unlock(&data->write);
+	if (philo->id % 2)
+		usleep(15000);
+	pthread_mutex_lock(&data->fork[philo->right_fork]);
+	ft_write(data, philo, "has taken his right fork");
+	pthread_mutex_lock(&data->fork[philo->left_fork]);
+	ft_write(data, philo, "has taken his left fork");
+	ft_write(data, philo, "has eaten");
+	usleep(data->t_to_eat);
+	pthread_mutex_unlock(&data->fork[philo->left_fork]);
+	pthread_mutex_unlock(&data->fork[philo->right_fork]);
+	//	printf("%d\n", data->t_to_eat);
+
+	ft_write(data, philo, "is sleeping");
+//	printf("coucou\n");
 	return (0);
 }
 
-long get_timestamp(t_data *data)
+long long	get_timestamp(void)
 {
 	struct timeval	new;
-	long time;
+//	long time;
 
 	gettimeofday(&new, NULL);
-	printf("start2 : %lld\n", data->timestamp_start);
+//	printf("start2 : %f\n", data->timestamp_start);
 
-	time = (new.tv_sec * 1000000 + new.tv_usec) - data->timestamp_start;
-	printf("%ld\n", time);
-	return (time);
+//	time = () - data->timestamp_start;
+//	printf("time  : %ld\n", time);
+	return (new.tv_sec * 1000 + new.tv_usec / 1000);
 }
 
 int init_mutex(t_data *data)
@@ -82,27 +105,27 @@ int init_mutex(t_data *data)
 
 int philo(t_data *data)
 {
-	int i;
-	struct timeval	start;
-
+	int 		i;
+//	t_philo		*philo;
+//
+//	philo = data->philo;
 	i = 0;
-
-
-	data->philo_thread = malloc(sizeof(pthread_t) * data->nb_of_philo);
-	if (!data->philo_thread)
-		ft_exit("Malloc error");
-	gettimeofday(&start, NULL);
-	data->timestamp_start = start.tv_sec * 1000000 + start.tv_usec;
-	printf("start1 : %lld\n", data->timestamp_start);
+//	data->philo->philo_thread = malloc(sizeof(pthread_t) * data->nb_of_philo);
+//	if (!data->philo->philo_thread)
+//		ft_exit("Malloc error");
+	data->timestamp_start = get_timestamp();
+	data->t_to_die = 5;
+//	data->timestamp_start = start.tv_sec * 1000 + start.tv_usec / 1000;
+//	printf("start1 : %lld\n", data->timestamp_start);
 	while (i < data->nb_of_philo)
 	{
-		pthread_create(&data->philo_thread[i], NULL, function, data->philo);
+		pthread_create(&data->philo[i].philo_thread, NULL, function, &data->philo[i]);
 		i++;
 	}
 	i = 0;
 	while (i < data->nb_of_philo)
 	{
-		pthread_join(data->philo_thread[i], NULL);
+		pthread_join(data->philo[i].philo_thread, NULL);
 		i++;
 	}
 	return (0);
@@ -115,6 +138,7 @@ int	main(int ac, char **av)
 	if (ac != 5 && ac != 6)
 		ft_exit("Not the right number of arguments");
 	data_set(&data, ac, av);
+	philo_set(&data);
 	philo(&data);
 	return (0);
 }
