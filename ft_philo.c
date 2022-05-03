@@ -1,40 +1,5 @@
 #include "includes/philo.h"
 
-int	data_set(t_data *data, int ac, char **av)
-{
-
-
-	data->nb_of_philo = ft_atoi(av[1]);
-	data->t_to_die = ft_atoi(av[2]);
-	data->t_to_eat = ft_atoi(av[3]);
-	data->t_to_sleep= ft_atoi(av[4]);
-	if (ac == 6)
-		data->nb_of_t_each_philo_must_eat= ft_atoi(av[5]);
-	data->philo = malloc(sizeof(t_philo) * data->nb_of_philo);
-	if (!data->philo)
-		ft_exit("Malloc error");
-
-
-	return (0);
-}
-
-int philo_set(t_data *data)
-{
-	int	i;
-
-	i = 0;
-	while (i < data->nb_of_philo)
-	{
-		data->philo[i].id = i;
-		data->philo[i].right_fork = i;
-		data->philo[i].left_fork = (i + 1) % data->nb_of_philo;
-		data->philo[i].last_time_eat = data->timestamp_start;
-		data->philo[i].data = data;
-		i++;
-	}
-	return (0);
-}
-
 int		ft_write(t_data *data, t_philo *philo, char *status)
 {
 	pthread_mutex_lock(&data->write);
@@ -47,41 +12,43 @@ int		ft_write(t_data *data, t_philo *philo, char *status)
 	return (0);
 }
 
-void*	function(void *arg)
+int		eat(t_data *data, t_philo *philo)
 {
-	t_philo	*philo;
-	t_data	*data;
+	int error;
 
-	philo = (t_philo *)arg;
-	data = philo->data;
 	if (philo->id % 2)
 		usleep(15000);
-	pthread_mutex_lock(&data->fork[philo->right_fork]);
-	ft_write(data, philo, "has taken his right fork");
-	pthread_mutex_lock(&data->fork[philo->left_fork]);
-	ft_write(data, philo, "has taken his left fork");
-	ft_write(data, philo, "has eaten");
-	usleep(data->t_to_eat);
+	if (pthread_mutex_lock(&data->fork[philo->right_fork]))
+	{
+		printf("Lock error right fork\n");
+		return (1);
+	}
+	if (ft_write(data, philo, "has taken his right fork"))
+	{
+		printf("Write error right fork\n");
+		return (1);
+	}
+	if (pthread_mutex_lock(&data->fork[philo->left_fork]))
+	{
+		printf("Lock error left fork\n");
+		return (1);
+	}
+	if (ft_write(data, philo, "has taken his left fork"))
+	{
+		printf("Write error left fork\n");
+		return (1);
+	}
+	if (ft_write(data, philo, "has eaten"))
+	{
+		printf("Write error eaten\n");
+		return (1);
+	}
 	pthread_mutex_unlock(&data->fork[philo->left_fork]);
 	pthread_mutex_unlock(&data->fork[philo->right_fork]);
-	//	printf("%d\n", data->t_to_eat);
-
+	philo->last_time_eat = get_timestamp();
 	ft_write(data, philo, "is sleeping");
-//	printf("coucou\n");
+	usleep(data->t_to_eat);
 	return (0);
-}
-
-long long	get_timestamp(void)
-{
-	struct timeval	new;
-//	long time;
-
-	gettimeofday(&new, NULL);
-//	printf("start2 : %f\n", data->timestamp_start);
-
-//	time = () - data->timestamp_start;
-//	printf("time  : %ld\n", time);
-	return (new.tv_sec * 1000 + new.tv_usec / 1000);
 }
 
 int init_mutex(t_data *data)
@@ -103,6 +70,40 @@ int init_mutex(t_data *data)
 	return (0);
 }
 
+int		check_dead(t_data *data)
+{
+	int	i;
+	long long time;
+
+	i = 0;
+	while (i < data->nb_of_philo)
+	{
+		time = data->philo->last_time_eat - get_timestamp();
+		if (time > data->t_to_die)
+		{
+			ft_write(data, &data->philo[i], "has died\n");
+			return (1);
+		}
+		i++;
+	}
+	return (0);
+}
+
+void*	function(void *arg)
+{
+	t_philo	*philo;
+	t_data	*data;
+
+	philo = (t_philo *)arg;
+	data = philo->data;
+	init_mutex(data);
+	while (!check_dead(data))
+		eat(data, philo);
+	usleep(100);
+	return (0);
+}
+
+
 int philo(t_data *data)
 {
 	int 		i;
@@ -113,8 +114,8 @@ int philo(t_data *data)
 //	data->philo->philo_thread = malloc(sizeof(pthread_t) * data->nb_of_philo);
 //	if (!data->philo->philo_thread)
 //		ft_exit("Malloc error");
-	data->timestamp_start = get_timestamp();
 	data->t_to_die = 5;
+	data->timestamp_start = get_timestamp();
 //	data->timestamp_start = start.tv_sec * 1000 + start.tv_usec / 1000;
 //	printf("start1 : %lld\n", data->timestamp_start);
 	while (i < data->nb_of_philo)

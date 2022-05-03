@@ -42,8 +42,15 @@ typedef struct s_data
 }				t_data;
 
 
-//philo.c
+//ft_philo.c
 long long	get_timestamp();
+
+//ft_set.c
+int	data_set(t_data *data, int ac, char **av);
+int philo_set(t_data *data);
+
+//ft_utils.c
+long long	get_timestamp(void);
 
 //ft_error.c
 int	ft_exit(char *error);
