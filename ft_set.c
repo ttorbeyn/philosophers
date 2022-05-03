@@ -11,6 +11,7 @@ int	data_set(t_data *data, int ac, char **av)
 	data->philo = malloc(sizeof(t_philo) * data->nb_of_philo);
 	if (!data->philo)
 		ft_exit("Malloc error");
+	data->timestamp_start = get_timestamp();
 	return (0);
 }
 

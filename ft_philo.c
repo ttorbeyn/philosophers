@@ -14,8 +14,6 @@ int		ft_write(t_data *data, t_philo *philo, char *status)
 
 int		eat(t_data *data, t_philo *philo)
 {
-	int error;
-
 	if (philo->id % 2)
 		usleep(15000);
 	if (pthread_mutex_lock(&data->fork[philo->right_fork]))
@@ -23,6 +21,8 @@ int		eat(t_data *data, t_philo *philo)
 		printf("Lock error right fork\n");
 		return (1);
 	}
+	if (philo->right_fork == philo->left_fork)
+		return (1);
 	if (ft_write(data, philo, "has taken his right fork"))
 	{
 		printf("Write error right fork\n");
@@ -43,11 +43,12 @@ int		eat(t_data *data, t_philo *philo)
 		printf("Write error eaten\n");
 		return (1);
 	}
+	usleep(data->t_to_eat);
 	pthread_mutex_unlock(&data->fork[philo->left_fork]);
 	pthread_mutex_unlock(&data->fork[philo->right_fork]);
 	philo->last_time_eat = get_timestamp();
 	ft_write(data, philo, "is sleeping");
-	usleep(data->t_to_eat);
+	usleep(data->t_to_sleep);
 	return (0);
 }
 
@@ -78,7 +79,9 @@ int		check_dead(t_data *data)
 	i = 0;
 	while (i < data->nb_of_philo)
 	{
-		time = data->philo->last_time_eat - get_timestamp();
+		time = get_timestamp() - data->philo[i].last_time_eat;
+//		printf("time : %lld\n", time);
+//		printf("t to die : %d\n", data->t_to_die);
 		if (time > data->t_to_die)
 		{
 			ft_write(data, &data->philo[i], "has died\n");
@@ -114,8 +117,7 @@ int philo(t_data *data)
 //	data->philo->philo_thread = malloc(sizeof(pthread_t) * data->nb_of_philo);
 //	if (!data->philo->philo_thread)
 //		ft_exit("Malloc error");
-	data->t_to_die = 5;
-	data->timestamp_start = get_timestamp();
+//	printf("time start : %lld\n", data->timestamp_start);
 //	data->timestamp_start = start.tv_sec * 1000 + start.tv_usec / 1000;
 //	printf("start1 : %lld\n", data->timestamp_start);
 	while (i < data->nb_of_philo)
