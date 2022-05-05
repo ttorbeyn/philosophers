@@ -2,13 +2,13 @@
 
 int		ft_write(t_data *data, t_philo *philo, char *status)
 {
-	pthread_mutex_lock(&data->write);
+	if (pthread_mutex_lock(&data->write))
+		return (ft_error("Lock write"));
 	printf("%lld\t | ", get_timestamp() - data->timestamp_start);
 	printf("philo %d\t", philo->id);
 	printf("%s\n", status);
-//	printf("start : %lld\n", data->timestamp_start);
-//	printf("current : %lld\n", get_timestamp());
-	pthread_mutex_unlock(&data->write);
+	if (pthread_mutex_unlock(&data->write))
+		return (ft_error("Lock write"));
 	return (0);
 }
 
@@ -101,7 +101,8 @@ void*	function(void *arg)
 	data = philo->data;
 	init_mutex(data);
 	while (!check_dead(data))
-		eat(data, philo);
+		if(eat(data, philo))
+			return (0);
 	usleep(100);
 	return (0);
 }

@@ -7,3 +7,4 @@ long long	get_timestamp(void)
 	gettimeofday(&new, NULL);
 	return (new.tv_sec * 1000 + new.tv_usec / 1000);
 }
+

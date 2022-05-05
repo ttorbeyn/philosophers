@@ -20,7 +20,8 @@ SRC				=	./ft_philo.c \
 					./ft_error.c \
 					./ft_set.c \
 					./ft_utils.c \
-					./libft/ft_atoi.c
+					./libft/ft_atoi.c \
+					./libft/ft_strlen.c
 
 OBJS			=	$(SRC:.c=.o)
 
