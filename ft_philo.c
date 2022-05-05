@@ -17,32 +17,17 @@ int		eat(t_data *data, t_philo *philo)
 	if (philo->id % 2)
 		usleep(15000);
 	if (pthread_mutex_lock(&data->fork[philo->right_fork]))
-	{
-		printf("Lock error right fork\n");
-		return (1);
-	}
+		return (ft_error("Lock right fork"));
 	if (philo->right_fork == philo->left_fork)
 		return (1);
 	if (ft_write(data, philo, "has taken his right fork"))
-	{
-		printf("Write error right fork\n");
-		return (1);
-	}
+		return (ft_error("Write right fork"));
 	if (pthread_mutex_lock(&data->fork[philo->left_fork]))
-	{
-		printf("Lock error left fork\n");
-		return (1);
-	}
+		return (ft_error("Lock left fork"));
 	if (ft_write(data, philo, "has taken his left fork"))
-	{
-		printf("Write error left fork\n");
-		return (1);
-	}
+		return (ft_error("Write left fork"));
 	if (ft_write(data, philo, "has eaten"))
-	{
-		printf("Write error eaten\n");
-		return (1);
-	}
+		return (ft_error("Write eaten"));
 	usleep(data->t_to_eat);
 	pthread_mutex_unlock(&data->fork[philo->left_fork]);
 	pthread_mutex_unlock(&data->fork[philo->right_fork]);

@@ -54,6 +54,7 @@ long long	get_timestamp(void);
 
 //ft_error.c
 int	ft_exit(char *error);
+int ft_error(char *error);
 
 //libft
 int	ft_atoi(const char *str);
