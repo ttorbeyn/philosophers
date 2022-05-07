@@ -46,6 +46,7 @@ typedef struct s_data
 long long	get_timestamp();
 
 //ft_set.c
+int init_mutex(t_data *data);
 int	data_set(t_data *data, int ac, char **av);
 int philo_set(t_data *data);
 

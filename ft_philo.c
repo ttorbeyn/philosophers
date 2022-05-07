@@ -12,6 +12,27 @@ int		ft_write(t_data *data, t_philo *philo, char *status)
 	return (0);
 }
 
+int		check_dead(t_data *data)
+{
+	int	i;
+	long long time;
+
+	i = 0;
+	while (i < data->nb_of_philo)
+	{
+		time = get_timestamp() - data->philo[i].last_time_eat;
+//		printf("time : %lld\n", time);
+//		printf("t to die : %d\n", data->t_to_die);
+		if (time > data->t_to_die)
+		{
+			ft_write(data, &data->philo[i], "has died\n");
+			return (1);
+		}
+		i++;
+	}
+	return (0);
+}
+
 int		eat(t_data *data, t_philo *philo)
 {
 	if (philo->id % 2)
@@ -37,45 +58,7 @@ int		eat(t_data *data, t_philo *philo)
 	return (0);
 }
 
-int init_mutex(t_data *data)
-{
-	int i;
 
-	i = 0;
-	data->fork = malloc(sizeof(pthread_mutex_t) * data->nb_of_philo);
-	if (!data->fork)
-		ft_exit("Malloc error");
-	while (i < data->nb_of_philo)
-	{
-		if (pthread_mutex_init(&data->fork[i], NULL))
-			ft_exit("Mutex error");
-		i++;
-	}
-	if (pthread_mutex_init(&data->write, NULL))
-		ft_exit("Mutex error");
-	return (0);
-}
-
-int		check_dead(t_data *data)
-{
-	int	i;
-	long long time;
-
-	i = 0;
-	while (i < data->nb_of_philo)
-	{
-		time = get_timestamp() - data->philo[i].last_time_eat;
-//		printf("time : %lld\n", time);
-//		printf("t to die : %d\n", data->t_to_die);
-		if (time > data->t_to_die)
-		{
-			ft_write(data, &data->philo[i], "has died\n");
-			return (1);
-		}
-		i++;
-	}
-	return (0);
-}
 
 void*	function(void *arg)
 {
@@ -84,12 +67,11 @@ void*	function(void *arg)
 
 	philo = (t_philo *)arg;
 	data = philo->data;
-	init_mutex(data);
 	while (!check_dead(data))
 		if(eat(data, philo))
-			return (0);
+			return (NULL);
 	usleep(100);
-	return (0);
+	return (NULL);
 }
 
 
@@ -125,9 +107,11 @@ int	main(int ac, char **av)
 	t_data	data;
 
 	if (ac != 5 && ac != 6)
-		ft_exit("Not the right number of arguments");
-	data_set(&data, ac, av);
+		ft_error("Not the right number of arguments");
+	if (data_set(&data, ac, av))
+		ft_error("Data set");
 	philo_set(&data);
+	init_mutex(&data);
 	philo(&data);
 	return (0);
 }

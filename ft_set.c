@@ -1,5 +1,25 @@
 #include "includes/philo.h"
 
+int init_mutex(t_data *data)
+{
+	int i;
+
+	i = 0;
+	data->fork = malloc(sizeof(pthread_mutex_t) * data->nb_of_philo);
+	if (!data->fork)
+		ft_exit("Malloc error");
+	while (i < data->nb_of_philo)
+	{
+		if (pthread_mutex_init(&data->fork[i], NULL))
+			ft_exit("Mutex error");
+		i++;
+	}
+	if (pthread_mutex_init(&data->write, NULL))
+		ft_exit("Mutex error");
+	return (0);
+}
+
+
 int	data_set(t_data *data, int ac, char **av)
 {
 	data->nb_of_philo = ft_atoi(av[1]);
@@ -12,6 +32,8 @@ int	data_set(t_data *data, int ac, char **av)
 	if (!data->philo)
 		ft_exit("Malloc error");
 	data->timestamp_start = get_timestamp();
+	if (data->nb_of_philo < 2)
+		return (1);
 	return (0);
 }
 
