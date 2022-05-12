@@ -23,9 +23,10 @@ typedef struct s_philo
 	int 			right_fork;
 	int 			left_fork;
 	long long		last_time_eat;
+	int 			nb_of_eat;
+	struct s_data	*data;
 	int				state;
 	pthread_t		philo_thread;
-	struct s_data	*data;
 }				t_philo;
 
 typedef struct s_data
@@ -34,7 +35,9 @@ typedef struct s_data
 	int				t_to_die;
 	int				t_to_eat;
 	int 			t_to_sleep;
+	int				dead;
 	int				nb_of_t_each_philo_must_eat;
+	int 			philo_sated;
 	long long		timestamp_start;
 	t_philo			*philo;
 	pthread_mutex_t	*fork;
@@ -52,13 +55,19 @@ int philo_set(t_data *data);
 
 //ft_utils.c
 long long	get_timestamp(void);
+int		print_status(t_data *data, t_philo *philo, char *status);
+long long 	time_diff(long long old, long long new);
+int		philo_sleep(long long t_to_sleep, t_data *data);
 
 //ft_error.c
-int	ft_exit(char *error);
-int ft_error(char *error);
+int		ft_exit(char *error);
+int 	ft_error(char *error);
 
 //libft
-int	ft_atoi(const char *str);
+int		ft_atoi(const char *str);
 size_t	ft_strlen(const char *s);
+void	ft_putnbr(int n);
+void	ft_putstr(char *s);
+void	ft_putchar(char c);
 
 #endif

@@ -21,6 +21,9 @@ SRC				=	./ft_philo.c \
 					./ft_set.c \
 					./ft_utils.c \
 					./libft/ft_atoi.c \
+					./libft/ft_putnbr.c \
+					./libft/ft_putchar.c \
+					./libft/ft_putstr.c \
 					./libft/ft_strlen.c
 
 OBJS			=	$(SRC:.c=.o)
