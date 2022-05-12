@@ -66,7 +66,7 @@ int 	ft_error(char *error);
 //libft
 int		ft_atoi(const char *str);
 size_t	ft_strlen(const char *s);
-void	ft_putnbr(int n);
+void	ft_putnbr(long long n);
 void	ft_putstr(char *s);
 void	ft_putchar(char c);
 

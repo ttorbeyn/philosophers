@@ -14,9 +14,12 @@ int		print_status(t_data *data, t_philo *philo, char *status)
 		ft_error("Lock write");
 	if(!(data->dead))
 	{
-		printf("%lld\t | ", get_timestamp() - data->timestamp_start);
-		printf("philo %d\t", philo->id + 1);
-		printf("%s\n", status);
+		ft_putnbr(get_timestamp() - data->timestamp_start);
+		ft_putstr("\t");
+		ft_putnbr(philo->id + 1);
+		ft_putstr(" ");
+		ft_putstr(status);
+		ft_putstr("\n");
 	}
 	if (pthread_mutex_unlock(&data->write))
 		ft_error("Lock write");

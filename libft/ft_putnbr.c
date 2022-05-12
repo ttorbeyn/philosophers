@@ -1,9 +1,9 @@
 #include "../includes/philo.h"
 
 
-void		ft_putnbr(int n)
+void		ft_putnbr(long long n)
 {
-	unsigned int	n2;
+	unsigned long long	n2;
 
 	if (n < 0)
 	{
