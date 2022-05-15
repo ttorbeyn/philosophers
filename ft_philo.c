@@ -4,9 +4,9 @@ int		check_dead(t_data *data)
 {
 	int	i;
 
-	i = 0;
 	while (!data->philo_sated)
 	{
+		i = 0;
 		while (i < data->nb_of_philo && !data->dead)
 		{
 			if (time_diff(data->philo[i].last_time_eat, get_timestamp()) > data->t_to_die)
@@ -36,10 +36,18 @@ int		philo_eat(t_data *data, t_philo *philo)
 	if (pthread_mutex_lock(&data->fork[philo->left_fork]))
 		ft_error("Lock left fork");
 	print_status(data, philo, "has taken [his left] a fork");
+	if (pthread_mutex_lock(&data->eat))
+		ft_error("Lock eat");
 	print_status(data, philo, "is eating");
 	philo->last_time_eat = get_timestamp();
+	if (pthread_mutex_unlock(&data->eat))
+		ft_error("Unlock eat");
 	philo_sleep(data->t_to_eat, data);
+	if (pthread_mutex_lock(&data->eat))
+		ft_error("Lock eat");
 	philo->nb_of_eat++;
+	if (pthread_mutex_unlock(&data->eat))
+		ft_error("Unlock eat");
 	pthread_mutex_unlock(&data->fork[philo->left_fork]);
 	pthread_mutex_unlock(&data->fork[philo->right_fork]);
 	return (0);

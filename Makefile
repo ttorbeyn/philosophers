@@ -12,7 +12,7 @@
 
 CC				=	gcc
 
-CFLAGS			=	-Wall -Wextra -Werror
+CFLAGS			=	-Wall -Wextra -Werror -fsanitize=thread
 
 INCLUDE			=	-I include
 

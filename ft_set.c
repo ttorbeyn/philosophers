@@ -16,6 +16,8 @@ int init_mutex(t_data *data)
 	}
 	if (pthread_mutex_init(&data->write, NULL))
 		ft_exit("Mutex error");
+	if (pthread_mutex_init(&data->eat, NULL))
+		ft_exit("Mutex error");
 	return (0);
 }
 

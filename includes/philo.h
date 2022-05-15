@@ -42,6 +42,7 @@ typedef struct s_data
 	t_philo			*philo;
 	pthread_mutex_t	*fork;
 	pthread_mutex_t	write;
+	pthread_mutex_t	eat;
 }				t_data;
 
 
