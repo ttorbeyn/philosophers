@@ -25,3 +25,12 @@ int	ft_error(char *error)
 	write(1, "\n", 1);
 	exit(EXIT_FAILURE);
 }
+
+int	ft_free_all(t_data *data)
+{
+	if (data->philo)
+		free (data->philo);
+	if (data->fork)
+		free (data->fork);
+	return (0);
+}

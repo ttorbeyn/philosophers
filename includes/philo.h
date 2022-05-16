@@ -73,9 +73,14 @@ long long	time_diff(long long old, long long new);
 int			philo_sleep(long long t_to_sleep, t_data *data);
 int			ft_mutex_lock(pthread_mutex_t *var, int lock, char *str);
 
+//ft_utils2
+int			hes_dead(t_data *data, int i);
+long long	get_time(t_data *data, int i);
+
 //ft_error.c
 int			ft_exit(char *error);
 int			ft_error(char *error);
+int			ft_free_all(t_data *data);
 
 //libft
 int			ft_atoi(const char *str);

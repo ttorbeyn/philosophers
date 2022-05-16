@@ -15,24 +15,14 @@
 int	check_dead(t_data *data)
 {
 	int			i;
-	long long	time;
 
 	while (!data->philo_sated)
 	{
-		i = 0;
-		while (i < data->nb_of_philo && !data->dead)
+		i = -1;
+		while (++i < data->nb_of_philo && !data->dead)
 		{
-			ft_mutex_lock(&data->eat, LOCK, "eat");
-			time = time_diff(data->philo[i].last_time_eat, get_timestamp());
-			ft_mutex_lock(&data->eat, UNLOCK, "eat");
-			if (time > data->t_to_die)
-			{
-				print_status(data, &data->philo[i], "died");
-				ft_mutex_lock(&data->died, LOCK, "died");
-				data->dead = 1;
-				ft_mutex_lock(&data->died, UNLOCK, "died");
-			}
-			i++;
+			if (get_time(data, i) > data->t_to_die)
+				hes_dead(data, i);
 		}
 		if (data->dead)
 			break ;
@@ -50,26 +40,20 @@ int	check_dead(t_data *data)
 
 int	philo_eat(t_data *data, t_philo *philo)
 {
-	if (pthread_mutex_lock(&data->fork[philo->right_fork]))
-		ft_error("Lock right fork");
+	ft_mutex_lock(&data->fork[philo->right_fork], LOCK, "right fork");
 	print_status(data, philo, "has taken [his right] a fork");
-	if (pthread_mutex_lock(&data->fork[philo->left_fork]))
-		ft_error("Lock left fork");
+	ft_mutex_lock(&data->fork[philo->left_fork], LOCK, "left fork");
 	print_status(data, philo, "has taken [his left] a fork");
 	print_status(data, philo, "is eating");
-	if (pthread_mutex_lock(&data->eat))
-		ft_error("Lock eat");
+	ft_mutex_lock(&data->eat, LOCK, "last time eat");
 	philo->last_time_eat = get_timestamp();
-	if (pthread_mutex_unlock(&data->eat))
-		ft_error("Unlock eat");
+	ft_mutex_lock(&data->eat, UNLOCK, "last time eat");
 	philo_sleep(data->t_to_eat, data);
-	if (pthread_mutex_lock(&data->eat))
-		ft_error("Lock eat");
+	ft_mutex_lock(&data->eat, LOCK, "number of eat");
 	philo->nb_of_eat++;
-	if (pthread_mutex_unlock(&data->eat))
-		ft_error("Unlock eat");
-	pthread_mutex_unlock(&data->fork[philo->left_fork]);
-	pthread_mutex_unlock(&data->fork[philo->right_fork]);
+	ft_mutex_lock(&data->eat, UNLOCK, "number of eat");
+	ft_mutex_lock(&data->fork[philo->right_fork], UNLOCK, "right fork");
+	ft_mutex_lock(&data->fork[philo->left_fork], UNLOCK, "left fork");
 	return (0);
 }
 
@@ -86,11 +70,9 @@ void	*function(void *arg)
 	while (!data->dead)
 	{
 		philo_eat(data, philo);
-		if (pthread_mutex_lock(&data->eat))
-			ft_error("Lock eat");
+		ft_mutex_lock(&data->eat, LOCK, "philo sated");
 		sated = data->philo_sated;
-		if (pthread_mutex_unlock(&data->eat))
-			ft_error("Unlock eat");
+		ft_mutex_lock(&data->eat, UNLOCK, "philo sated");
 		if (sated)
 			break ;
 		print_status(data, philo, "is sleeping");
@@ -134,5 +116,6 @@ int	main(int ac, char **av)
 	init_mutex(&data);
 	philo(&data);
 	destroy_mutex(&data);
+	ft_free_all(&data);
 	return (0);
 }

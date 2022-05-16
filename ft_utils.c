@@ -24,13 +24,10 @@ int	print_status(t_data *data, t_philo *philo, char *status)
 {
 	int	dead;
 
-	if (pthread_mutex_lock(&data->died))
-		ft_error("Lock died3");
+	ft_mutex_lock(&data->died, LOCK, "dead");
 	dead = data->dead;
-	if (pthread_mutex_unlock(&data->died))
-		ft_error("Unlock died3");
-	if (pthread_mutex_lock(&data->write))
-		ft_error("Lock write");
+	ft_mutex_lock(&data->died, UNLOCK, "dead");
+	ft_mutex_lock(&data->write, LOCK, "write");
 	if (!dead)
 	{
 		ft_putnbr(get_timestamp() - data->timestamp_start);
@@ -40,8 +37,7 @@ int	print_status(t_data *data, t_philo *philo, char *status)
 		ft_putstr(status);
 		ft_putstr("\n");
 	}
-	if (pthread_mutex_unlock(&data->write))
-		ft_error("Lock write");
+	ft_mutex_lock(&data->write, UNLOCK, "write");
 	return (0);
 }
 
@@ -56,11 +52,9 @@ int	philo_sleep(long long t_to_sleep, t_data *data)
 	int			dead;
 
 	i = get_timestamp();
-	if (pthread_mutex_lock(&data->died))
-		ft_error("Lock died2");
+	ft_mutex_lock(&data->died, LOCK, "dead");
 	dead = data->dead;
-	if (pthread_mutex_unlock(&data->died))
-		ft_error("Unlock died2");
+	ft_mutex_lock(&data->died, UNLOCK, "dead");
 	while (!dead)
 	{
 		if (time_diff(i, get_timestamp()) >= t_to_sleep)

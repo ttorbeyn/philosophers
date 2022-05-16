@@ -12,7 +12,7 @@
 
 CC				=	gcc
 
-CFLAGS			=	-Wall -Wextra -Werror -fsanitize=thread
+CFLAGS			=	-Wall -Wextra -Werror -g -fsanitize=thread
 
 INCLUDE			=	-I include
 
@@ -20,6 +20,7 @@ SRC				=	./ft_philo.c \
 					./ft_error.c \
 					./ft_set.c \
 					./ft_utils.c \
+					./ft_utils2.c \
 					./libft/ft_atoi.c \
 					./libft/ft_putnbr.c \
 					./libft/ft_putchar.c \
