@@ -18,11 +18,12 @@ int	check_dead(t_data *data)
 
 	while (!data->philo_sated)
 	{
-		i = -1;
-		while (++i < data->nb_of_philo && !data->dead)
+		i = 0;
+		while (i < data->nb_of_philo && !data->dead)
 		{
 			if (get_time(data, i) > data->t_to_die)
 				hes_dead(data, i);
+			i++;
 		}
 		if (data->dead)
 			break ;
