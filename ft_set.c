@@ -12,9 +12,9 @@
 
 #include "includes/philo.h"
 
-int init_mutex(t_data *data)
+int	init_mutex(t_data *data)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	data->fork = malloc(sizeof(pthread_mutex_t) * data->nb_of_philo);
@@ -35,9 +35,9 @@ int init_mutex(t_data *data)
 	return (0);
 }
 
-int destroy_mutex(t_data *data)
+int	destroy_mutex(t_data *data)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < data->nb_of_philo)
@@ -55,7 +55,7 @@ int destroy_mutex(t_data *data)
 	return (0);
 }
 
-int philo_set(t_data *data)
+int	philo_set(t_data *data)
 {
 	int	i;
 

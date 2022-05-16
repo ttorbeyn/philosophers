@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ttorbeyn <ttorbeyn@student.s19.be>         +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/16 17:17:03 by ttorbeyn          #+#    #+#             */
+/*   Updated: 2022/05/16 17:17:04 by ttorbeyn         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/philo.h"
 
 static	int	ft_verifyll(unsigned long long a, int sign, int c)
@@ -18,12 +30,12 @@ static	int	ft_isspace(const char *str)
 
 	i = 0;
 	while (str[i] == ' ' || str[i] == '\t' || str[i] == '\n' || str[i] == '\v'
-		   || str[i] == '\f' || str[i] == '\r')
+		|| str[i] == '\f' || str[i] == '\r')
 		i++;
 	return (i);
 }
 
-int			ft_atoi(const char *str)
+int	ft_atoi(const char *str)
 {
 	int					i;
 	unsigned long long	y;

@@ -37,20 +37,18 @@ int	check_dead(t_data *data)
 		if (data->dead)
 			break ;
 		i = 0;
-		if (pthread_mutex_lock(&data->eat))
-			ft_error("Lock eat");
+		ft_mutex_lock(&data->eat, LOCK, "eat");
 		while (data->nb_of_t_each_philo_must_eat != -1 && i < data->nb_of_philo
 			&& data->philo[i].nb_of_eat >= data->nb_of_t_each_philo_must_eat)
 			i++;
 		if (i == data->nb_of_philo)
 			data->philo_sated = 1;
-		if (pthread_mutex_unlock(&data->eat))
-			ft_error("Unlock eat");
+		ft_mutex_lock(&data->eat, UNLOCK, "eat");
 	}
 	return (0);
 }
 
-int		philo_eat(t_data *data, t_philo *philo)
+int	philo_eat(t_data *data, t_philo *philo)
 {
 	if (pthread_mutex_lock(&data->fork[philo->right_fork]))
 		ft_error("Lock right fork");
@@ -75,11 +73,11 @@ int		philo_eat(t_data *data, t_philo *philo)
 	return (0);
 }
 
-void*	function(void *arg)
+void	*function(void *arg)
 {
 	t_philo	*philo;
 	t_data	*data;
-	int sated;
+	int		sated;
 
 	philo = (t_philo *)arg;
 	data = philo->data;
@@ -102,15 +100,16 @@ void*	function(void *arg)
 	return (NULL);
 }
 
-int philo(t_data *data)
+int	philo(t_data *data)
 {
-	int 		i;
+	int	i;
 
 	i = 0;
 	while (i < data->nb_of_philo)
 	{
 		data->philo[i].last_time_eat = get_timestamp();
-		pthread_create(&data->philo[i].philo_thread, NULL, function, &data->philo[i]);
+		pthread_create(&data->philo[i].philo_thread, NULL,
+			function, &data->philo[i]);
 		i++;
 	}
 	check_dead(data);

@@ -1,7 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_putnbr.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ttorbeyn <ttorbeyn@student.s19.be>         +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/16 17:17:16 by ttorbeyn          #+#    #+#             */
+/*   Updated: 2022/05/16 17:17:17 by ttorbeyn         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/philo.h"
 
-
-void		ft_putnbr(long long n)
+void	ft_putnbr(long long n)
 {
 	unsigned long long	n2;
 
