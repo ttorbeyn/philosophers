@@ -42,9 +42,9 @@ int	check_dead(t_data *data)
 int	philo_eat(t_data *data, t_philo *philo)
 {
 	ft_mutex_lock(&data->fork[philo->right_fork], LOCK, "right fork");
-	print_status(data, philo, "has taken [his right] a fork");
+	print_status(data, philo, "has taken a fork");
 	ft_mutex_lock(&data->fork[philo->left_fork], LOCK, "left fork");
-	print_status(data, philo, "has taken [his left] a fork");
+	print_status(data, philo, "has taken a fork");
 	print_status(data, philo, "is eating");
 	ft_mutex_lock(&data->eat, LOCK, "last time eat");
 	philo->last_time_eat = get_timestamp();
@@ -62,23 +62,27 @@ void	*function(void *arg)
 {
 	t_philo	*philo;
 	t_data	*data;
-	int		sated;
+	int		sated_dead;
 
 	philo = (t_philo *)arg;
 	data = philo->data;
 	if (philo->id % 2)
 		usleep(15000);
-	while (!data->dead)
+	sated_dead = 0;
+	while (!sated_dead)
 	{
 		philo_eat(data, philo);
 		ft_mutex_lock(&data->eat, LOCK, "philo sated");
-		sated = data->philo_sated;
+		sated_dead = data->philo_sated;
 		ft_mutex_lock(&data->eat, UNLOCK, "philo sated");
-		if (sated)
+		if (sated_dead)
 			break ;
 		print_status(data, philo, "is sleeping");
 		philo_sleep(data->t_to_sleep, data);
 		print_status(data, philo, "is thinking");
+		ft_mutex_lock(&data->died, LOCK, "died");
+		sated_dead = data->dead;
+		ft_mutex_lock(&data->died, UNLOCK, "died");
 	}
 	return (NULL);
 }
