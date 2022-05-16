@@ -80,7 +80,9 @@ int	data_set(t_data *data, int ac, char **av)
 	data->t_to_eat = ft_atoi(av[3]);
 	data->t_to_sleep = ft_atoi(av[4]);
 	data->philo_sated = 0;
-	if (data->nb_of_philo < 2 || data->t_to_die < 0 || data->t_to_eat < 0
+	if (data->nb_of_philo < 2)
+		exit (write(1, "0\t1 died\n", 9));
+	if (data->nb_of_philo < 1 || data->t_to_die < 0 || data->t_to_eat < 0
 		|| data->t_to_sleep < 0)
 		return (1);
 	data->dead = 0;
