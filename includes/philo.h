@@ -13,9 +13,8 @@
 # include <time.h>
 # include <sys/time.h>
 
-# define EATING 0
-# define SLEEPING 1
-# define THINKING 2
+# define LOCK 1
+# define UNLOCK 2
 
 typedef struct s_philo
 {
@@ -43,6 +42,7 @@ typedef struct s_data
 	pthread_mutex_t	*fork;
 	pthread_mutex_t	write;
 	pthread_mutex_t	eat;
+	pthread_mutex_t	died;
 }				t_data;
 
 
@@ -53,12 +53,14 @@ long long	get_timestamp();
 int init_mutex(t_data *data);
 int	data_set(t_data *data, int ac, char **av);
 int philo_set(t_data *data);
+int destroy_mutex(t_data *data);
 
 //ft_utils.c
 long long	get_timestamp(void);
 int		print_status(t_data *data, t_philo *philo, char *status);
 long long 	time_diff(long long old, long long new);
 int		philo_sleep(long long t_to_sleep, t_data *data);
+int		ft_mutex_lock(pthread_mutex_t *var, int lock, char *str);
 
 //ft_error.c
 int		ft_exit(char *error);
@@ -70,5 +72,6 @@ size_t	ft_strlen(const char *s);
 void	ft_putnbr(long long n);
 void	ft_putstr(char *s);
 void	ft_putchar(char c);
+char	*ft_strjoin(char const *s1, char const *s2);
 
 #endif

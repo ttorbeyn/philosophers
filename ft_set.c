@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_set.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ttorbeyn <ttorbeyn@student.s19.be>         +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/16 16:09:22 by ttorbeyn          #+#    #+#             */
+/*   Updated: 2022/05/16 16:09:23 by ttorbeyn         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "includes/philo.h"
 
 int init_mutex(t_data *data)
@@ -17,6 +29,28 @@ int init_mutex(t_data *data)
 	if (pthread_mutex_init(&data->write, NULL))
 		ft_exit("Mutex error");
 	if (pthread_mutex_init(&data->eat, NULL))
+		ft_exit("Mutex error");
+	if (pthread_mutex_init(&data->died, NULL))
+		ft_exit("Mutex error");
+	return (0);
+}
+
+int destroy_mutex(t_data *data)
+{
+	int i;
+
+	i = 0;
+	while (i < data->nb_of_philo)
+	{
+		if (pthread_mutex_destroy(&data->fork[i]))
+			ft_exit("Mutex error");
+		i++;
+	}
+	if (pthread_mutex_destroy(&data->write))
+		ft_exit("Mutex error");
+	if (pthread_mutex_destroy(&data->eat))
+		ft_exit("Mutex error");
+	if (pthread_mutex_destroy(&data->died))
 		ft_exit("Mutex error");
 	return (0);
 }

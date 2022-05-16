@@ -1,29 +1,51 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_philo.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ttorbeyn <ttorbeyn@student.s19.be>         +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/16 16:09:15 by ttorbeyn          #+#    #+#             */
+/*   Updated: 2022/05/16 16:09:16 by ttorbeyn         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "includes/philo.h"
 
-int		check_dead(t_data *data)
+int	check_dead(t_data *data)
 {
-	int	i;
+	int			i;
+	long long	time;
 
 	while (!data->philo_sated)
 	{
 		i = 0;
 		while (i < data->nb_of_philo && !data->dead)
 		{
-			if (time_diff(data->philo[i].last_time_eat, get_timestamp()) > data->t_to_die)
+			ft_mutex_lock(&data->eat, LOCK, "eat");
+			time = time_diff(data->philo[i].last_time_eat, get_timestamp());
+			ft_mutex_lock(&data->eat, UNLOCK, "eat");
+			if (time > data->t_to_die)
 			{
-				print_status(data, &data->philo[i], "died\n");
+				print_status(data, &data->philo[i], "died");
+				ft_mutex_lock(&data->died, LOCK, "died");
 				data->dead = 1;
+				ft_mutex_lock(&data->died, UNLOCK, "died");
 			}
 			i++;
 		}
 		if (data->dead)
 			break ;
 		i = 0;
+		if (pthread_mutex_lock(&data->eat))
+			ft_error("Lock eat");
 		while (data->nb_of_t_each_philo_must_eat != -1 && i < data->nb_of_philo
 			&& data->philo[i].nb_of_eat >= data->nb_of_t_each_philo_must_eat)
 			i++;
 		if (i == data->nb_of_philo)
 			data->philo_sated = 1;
+		if (pthread_mutex_unlock(&data->eat))
+			ft_error("Unlock eat");
 	}
 	return (0);
 }
@@ -36,9 +58,9 @@ int		philo_eat(t_data *data, t_philo *philo)
 	if (pthread_mutex_lock(&data->fork[philo->left_fork]))
 		ft_error("Lock left fork");
 	print_status(data, philo, "has taken [his left] a fork");
+	print_status(data, philo, "is eating");
 	if (pthread_mutex_lock(&data->eat))
 		ft_error("Lock eat");
-	print_status(data, philo, "is eating");
 	philo->last_time_eat = get_timestamp();
 	if (pthread_mutex_unlock(&data->eat))
 		ft_error("Unlock eat");
@@ -57,6 +79,7 @@ void*	function(void *arg)
 {
 	t_philo	*philo;
 	t_data	*data;
+	int sated;
 
 	philo = (t_philo *)arg;
 	data = philo->data;
@@ -65,7 +88,12 @@ void*	function(void *arg)
 	while (!data->dead)
 	{
 		philo_eat(data, philo);
-		if (data->philo_sated)
+		if (pthread_mutex_lock(&data->eat))
+			ft_error("Lock eat");
+		sated = data->philo_sated;
+		if (pthread_mutex_unlock(&data->eat))
+			ft_error("Unlock eat");
+		if (sated)
 			break ;
 		print_status(data, philo, "is sleeping");
 		philo_sleep(data->t_to_sleep, data);
@@ -81,8 +109,8 @@ int philo(t_data *data)
 	i = 0;
 	while (i < data->nb_of_philo)
 	{
-		pthread_create(&data->philo[i].philo_thread, NULL, function, &data->philo[i]);
 		data->philo[i].last_time_eat = get_timestamp();
+		pthread_create(&data->philo[i].philo_thread, NULL, function, &data->philo[i]);
 		i++;
 	}
 	check_dead(data);
@@ -106,5 +134,6 @@ int	main(int ac, char **av)
 	philo_set(&data);
 	init_mutex(&data);
 	philo(&data);
+	destroy_mutex(&data);
 	return (0);
 }
