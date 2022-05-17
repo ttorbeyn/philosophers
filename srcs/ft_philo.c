@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "includes/philo.h"
+#include "../includes/philo.h"
 
 int	check_dead(t_data *data)
 {
@@ -112,15 +112,21 @@ int	philo(t_data *data)
 int	main(int ac, char **av)
 {
 	t_data	data;
+	int		ret;
 
 	if (ac != 5 && ac != 6)
-		ft_error("Not the right number of arguments");
-	if (data_set(&data, ac, av))
+		return (ft_error("Not the right number of arguments"));
+	ret = data_set(&data, ac, av);
+	if (ret == 1)
 		ft_error("Data set");
+	if (ret)
+		return (1);
 	philo_set(&data);
-	init_mutex(&data);
+	if (init_mutex(&data))
+		return (1);
 	philo(&data);
-	destroy_mutex(&data);
+	if (destroy_mutex(&data))
+		return (1);
 	ft_free_all(&data);
 	return (0);
 }

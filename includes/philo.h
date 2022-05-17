@@ -78,7 +78,6 @@ int			hes_dead(t_data *data, int i);
 long long	get_time(t_data *data, int i);
 
 //ft_error.c
-int			ft_exit(char *error);
 int			ft_error(char *error);
 int			ft_free_all(t_data *data);
 

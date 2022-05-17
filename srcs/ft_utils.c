@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "includes/philo.h"
+#include "../includes/philo.h"
 
 long long	get_timestamp(void)
 {

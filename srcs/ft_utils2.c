@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "includes/philo.h"
+#include "../includes/philo.h"
 
 int	hes_dead(t_data *data, int i)
 {

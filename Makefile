@@ -16,11 +16,11 @@ CFLAGS			=	-Wall -Wextra -Werror
 
 INCLUDE			=	-I include
 
-SRC				=	./ft_philo.c \
-					./ft_error.c \
-					./ft_set.c \
-					./ft_utils.c \
-					./ft_utils2.c \
+SRC				=	./srcs/ft_philo.c \
+					./srcs/ft_error.c \
+					./srcs/ft_set.c \
+					./srcs/ft_utils.c \
+					./srcs/ft_utils2.c \
 					./libft/ft_atoi.c \
 					./libft/ft_putnbr.c \
 					./libft/ft_putchar.c \

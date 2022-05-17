@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "includes/philo.h"
+#include "../includes/philo.h"
 
 int	init_mutex(t_data *data)
 {
@@ -19,19 +19,19 @@ int	init_mutex(t_data *data)
 	i = 0;
 	data->fork = malloc(sizeof(pthread_mutex_t) * data->nb_of_philo);
 	if (!data->fork)
-		ft_exit("Malloc error");
+		return (ft_error("Malloc error"));
 	while (i < data->nb_of_philo)
 	{
 		if (pthread_mutex_init(&data->fork[i], NULL))
-			ft_exit("Mutex error");
+			return (ft_error("Mutex error"));
 		i++;
 	}
 	if (pthread_mutex_init(&data->write, NULL))
-		ft_exit("Mutex error");
+		return (ft_error("Mutex error"));
 	if (pthread_mutex_init(&data->eat, NULL))
-		ft_exit("Mutex error");
+		return (ft_error("Mutex error"));
 	if (pthread_mutex_init(&data->died, NULL))
-		ft_exit("Mutex error");
+		return (ft_error("Mutex error"));
 	return (0);
 }
 
@@ -43,15 +43,15 @@ int	destroy_mutex(t_data *data)
 	while (i < data->nb_of_philo)
 	{
 		if (pthread_mutex_destroy(&data->fork[i]))
-			ft_exit("Mutex error");
+			return (ft_error("Mutex error"));
 		i++;
 	}
 	if (pthread_mutex_destroy(&data->write))
-		ft_exit("Mutex error");
+		return (ft_error("Mutex error"));
 	if (pthread_mutex_destroy(&data->eat))
-		ft_exit("Mutex error");
+		return (ft_error("Mutex error"));
 	if (pthread_mutex_destroy(&data->died))
-		ft_exit("Mutex error");
+		return (ft_error("Mutex error"));
 	return (0);
 }
 
@@ -81,7 +81,7 @@ int	data_set(t_data *data, int ac, char **av)
 	data->t_to_sleep = ft_atoi(av[4]);
 	data->philo_sated = 0;
 	if (data->nb_of_philo < 2)
-		exit (write(1, "0\t1 died\n", 9));
+		return (write(1, "0\t1 died\n", 9) + 2);
 	if (data->nb_of_philo < 1 || data->t_to_die < 0 || data->t_to_eat < 0
 		|| data->t_to_sleep < 0)
 		return (1);
@@ -96,7 +96,7 @@ int	data_set(t_data *data, int ac, char **av)
 		data->nb_of_t_each_philo_must_eat = -1;
 	data->philo = malloc(sizeof(t_philo) * data->nb_of_philo);
 	if (!data->philo)
-		ft_exit("Malloc error");
+		return (ft_error("Malloc error"));
 	data->timestamp_start = get_timestamp();
 	return (0);
 }
