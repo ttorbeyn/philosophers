@@ -58,7 +58,6 @@ typedef struct s_data
 }				t_data;
 
 //ft_philo.c
-long long	get_timestamp(void);
 
 //ft_set.c
 int			init_mutex(t_data *data);
@@ -74,6 +73,7 @@ int			philo_sleep(long long t_to_sleep, t_data *data);
 int			ft_mutex_lock(pthread_mutex_t *var, int lock, char *str);
 
 //ft_utils2
+int			only_one_dead(t_data *data);
 int			hes_dead(t_data *data, int i);
 long long	get_time(t_data *data, int i);
 

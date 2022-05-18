@@ -12,6 +12,14 @@
 
 #include "../includes/philo.h"
 
+int	only_one_dead(t_data *data)
+{
+	usleep(data->t_to_die);
+	ft_putnbr(data->t_to_die);
+	write(1, "\t1 died\n", 8);
+	return (2);
+}
+
 int	hes_dead(t_data *data, int i)
 {
 	print_status(data, &data->philo[i], "died");
