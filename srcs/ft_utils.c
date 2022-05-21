@@ -22,13 +22,13 @@ long long	get_timestamp(void)
 
 int	print_status(t_data *data, t_philo *philo, char *status)
 {
-	int	dead;
+//	int	dead;
 
-	ft_mutex_lock(&data->died, LOCK, "dead");
-	dead = data->dead;
-	ft_mutex_lock(&data->died, UNLOCK, "dead");
+//	ft_mutex_lock(&data->died, LOCK, "dead");
+//	dead = data->dead;
+//	ft_mutex_lock(&data->died, UNLOCK, "dead");
 	ft_mutex_lock(&data->write, LOCK, "write");
-	if (!dead)
+	if (!data->dead_sated)
 	{
 		ft_putnbr(get_timestamp() - data->timestamp_start);
 		ft_putstr("\t");
@@ -53,7 +53,7 @@ int	philo_sleep(long long t_to_sleep, t_data *data)
 
 	i = get_timestamp();
 	ft_mutex_lock(&data->died, LOCK, "dead");
-	dead = data->dead;
+	dead = data->dead_sated;
 	ft_mutex_lock(&data->died, UNLOCK, "dead");
 	while (!dead)
 	{

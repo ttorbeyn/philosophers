@@ -24,7 +24,7 @@ int	hes_dead(t_data *data, int i)
 {
 	print_status(data, &data->philo[i], "died");
 	ft_mutex_lock(&data->died, LOCK, "died");
-	data->dead = 1;
+	data->dead_sated = 1;
 	ft_mutex_lock(&data->died, UNLOCK, "died");
 	return (0);
 }
