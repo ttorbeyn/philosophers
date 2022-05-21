@@ -85,7 +85,6 @@ int	data_set(t_data *data, int ac, char **av)
 		return (1);
 	if (data->nb_of_philo < 2)
 		return (only_one_dead(data));
-//	data->dead = 0;
 	if (ac == 6)
 	{
 		data->nb_of_t_each_philo_must_eat = ft_atoi(av[5]);

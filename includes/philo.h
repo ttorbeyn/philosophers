@@ -47,7 +47,6 @@ typedef struct s_data
 	int				t_to_sleep;
 	int				dead_sated;
 	int				nb_of_t_each_philo_must_eat;
-//	int				philo_sated;
 	long long		timestamp_start;
 	t_philo			*philo;
 	pthread_mutex_t	*fork;

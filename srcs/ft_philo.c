@@ -32,9 +32,11 @@ int	check_dead(t_data *data)
 		while (data->nb_of_t_each_philo_must_eat != -1 && i < data->nb_of_philo
 			&& data->philo[i].nb_of_eat >= data->nb_of_t_each_philo_must_eat)
 			i++;
+		ft_mutex_lock(&data->eat, UNLOCK, "eat");
+		ft_mutex_lock(&data->died, LOCK, "died");
 		if (i == data->nb_of_philo)
 			data->dead_sated = 1;
-		ft_mutex_lock(&data->eat, UNLOCK, "eat");
+		ft_mutex_lock(&data->died, UNLOCK, "died");
 	}
 	return (0);
 }
@@ -72,9 +74,9 @@ void	*function(void *arg)
 	while (!dead_sated)
 	{
 		philo_eat(data, philo);
-		ft_mutex_lock(&data->eat, LOCK, "philo sated");
+		ft_mutex_lock(&data->died, LOCK, "philo sated");
 		dead_sated = data->dead_sated;
-		ft_mutex_lock(&data->eat, UNLOCK, "philo sated");
+		ft_mutex_lock(&data->died, UNLOCK, "philo sated");
 		if (dead_sated)
 			break ;
 		print_status(data, philo, "is sleeping");
